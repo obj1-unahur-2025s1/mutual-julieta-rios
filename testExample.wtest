@@ -1,9 +1,69 @@
-import example.pepita
+import mutual.*
 
-describe "group of tests for pepita" {
+describe "group of tests for viajes" {
+  const bariloche = new Ciudad(idiomas = ["español"], cantidadDeAtracciones = 4)
+  const miami = new CiudadTropical(idiomas = ["ingles", "español"], cantidadDeAtracciones = 4)
+  const newYork = new Ciudad(idiomas = ["ingles"], cantidadDeAtracciones = 8)
+  const chalten = new Trekking(idiomas = ["español"], kmSenderos = 100, diasSoleados = 130)
+  const calafate = new Trekking(idiomas = ["español"], kmSenderos = 50, diasSoleados = 240)
+  const banff = new Trekking(idiomas = ["ingles", "frances"], kmSenderos = 150, diasSoleados = 180)
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  test "Una excursión a Bariloche en la que se visitan 4 atracciones, lleva 2 días, no implica esfuerzo, y no sirve para broncearse."{
+    assert.equals(2, bariloche.cantidadDeDias())
+    assert.notThat(bariloche.implicaEsfuerzo())
+    assert.notThat(bariloche.sirveParaBroncearse())
+  }
+
+  test "Una excursion a Miami en la que se visitan 4 atracciones, lleva 3 días, no implica esfuerzo, sí sirve para broncearse y es interesante."{
+    assert.equals(3, miami.cantidadDeDias())
+    assert.notThat(miami.implicaEsfuerzo())
+    assert.that(miami.sirveParaBroncearse())
+    assert.that(miami.esInteresante())
+  }
+
+  test "Una excursión a New York en la que se visitan 8 atracciones, lleva 4 días, implica esfuerzo, y no sirve para broncearse."{
+    assert.equals(4, newYork.cantidadDeDias())
+    assert.that(newYork.implicaEsfuerzo())
+    assert.notThat(newYork.sirveParaBroncearse())
+  }
+
+  test "Una salida de 100 kilómetros a El Chalten con 130 días de sol por año: lleva 2 días, implica esfuerzo, y no sirve para broncearse."{
+    assert.equals(2, chalten.cantidadDeDias())
+    assert.notThat(chalten.implicaEsfuerzo())
+    assert.notThat(chalten.sirveParaBroncearse())
+  }
+
+  test "Una salida de 50 kilómetros a El Calafate con 240 días de sol por año: lleva 1 día, no implica esfuerzo, y sí sirve para broncearse."{
+    assert.equals(1, calafate.cantidadDeDias())
+    assert.notThat(calafate.implicaEsfuerzo())
+    assert.that(calafate.sirveParaBroncearse())
+  }
+
+  test "Una salida de 150 kilómetros a Banff con 180 días de sol por año: lleva 3 días, implica esfuerzo, sí sirve para broncearse y es interesante."{
+    assert.equals(3, banff.cantidadDeDias())
+    assert.that(banff.implicaEsfuerzo())
+    assert.that(banff.sirveParaBroncearse())
+    assert.that(banff.esInteresante())
+  }
+}
+
+describe "Tests para socios"{
+  const puntaMogotes = new Playa(largo = 1000)
+  const pinamar = new Playa(largo = 2000)
+  const gym = new ClaseDeGimnasia()
+  const roque = new SocioTranquilo(maxActividades = 2, actividades = [puntaMogotes, pinamar], edad = 40)
+  const ana = new SocioCoherente(maxActividades = 3, actividades = [puntaMogotes, pinamar], edad = 25)
+
+  test "Roque es adorador del sol, tiene una sola actividad esforzada y no se puede anotar a una clase de gym porque tiene 2 actividades ya hechas"{
+    assert.that(roque.esAdoradorDelSol())
+    assert.equals([pinamar], roque.actividadesEsforzadas())
+    assert.throwsException({roque.registrarActiv(gym)})
+  }
+
+  test "Ana hizo los mismo viajes que Roque pero tiene un máximo de 3 actividades asi que se puede anotar a otra, pero deja de adorar al sol y su colección de actividades esforzadas incluye al viaje de 2000 metros de playa y a la clase."{
+    ana.registrarActiv(gym)
+    assert.notThat(ana.esAdoradorDelSol())
+    assert.equals([pinamar, gym], ana.actividadesEsforzadas())
   }
 
 }
